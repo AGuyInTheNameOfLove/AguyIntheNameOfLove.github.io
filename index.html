@@ -52,6 +52,7 @@
             position: relative;
             transform-style: preserve-3d;
             cursor: pointer;
+            transition: transform 1.8s cubic-bezier(0.22, 0.68, 0.25, 1.15);
         }
         .cube-face {
             position: absolute;
@@ -76,7 +77,6 @@
             outline-offset: -6px;
             overflow: hidden;
         }
-        /* Caras del dado */
         .cube-face--1 { transform: rotateY(0deg) translateZ(90px); }
         .cube-face--2 { transform: rotateY(180deg) translateZ(90px); }
         .cube-face--3 { transform: rotateY(90deg) translateZ(90px); }
@@ -84,7 +84,6 @@
         .cube-face--5 { transform: rotateX(90deg) translateZ(90px); }
         .cube-face--6 { transform: rotateX(-90deg) translateZ(90px); }
 
-        /* Puntos del dado clásico */
         .dots {
             width: 90px;
             height: 90px;
@@ -104,14 +103,12 @@
                 0 0 7px #ff005a;
             position: absolute;
         }
-        /* Posiciones para los 5 puntos */
         .dot.center { top: 50%; left: 50%; transform: translate(-50%, -50%); }
         .dot.topleft { top: 16%; left: 16%; }
         .dot.topright { top: 16%; right: 16%; }
         .dot.bottomleft { bottom: 16%; left: 16%; }
         .dot.bottomright { bottom: 16%; right: 16%; }
 
-        /* Opciones de fiesta */
         .option-text {
             font-size: 1.4rem;
             color: #fff;
@@ -122,7 +119,11 @@
             letter-spacing: 1px;
             user-select: none;
             display: block;
-            transform: rotate(0deg); /* Garantiza orientación correcta */
+        }
+        /* Corrige orientación en caras superior e inferior */
+        .cube-face--5 .option-text,
+        .cube-face--6 .option-text {
+            transform: rotateX(180deg);
         }
 
         .result {
@@ -198,12 +199,12 @@
         ];
         // Rotaciones para que el texto siempre quede legible
         const rotations = [
-            'rotateX(0deg) rotateY(0deg) rotateZ(0deg)',      // Cara 1
-            'rotateX(0deg) rotateY(180deg) rotateZ(0deg)',    // Cara 2
-            'rotateX(0deg) rotateY(90deg) rotateZ(0deg)',     // Cara 3
-            'rotateX(0deg) rotateY(-90deg) rotateZ(0deg)',    // Cara 4
-            'rotateX(-90deg) rotateY(0deg) rotateZ(0deg)',    // Cara 5
-            'rotateX(90deg) rotateY(0deg) rotateZ(0deg)'      // Cara 6
+            'rotateX(0deg) rotateY(0deg)',      // Cara 1 (frontal)
+            'rotateX(0deg) rotateY(180deg)',    // Cara 2 (trasera)
+            'rotateX(0deg) rotateY(90deg)',     // Cara 3 (derecha)
+            'rotateX(0deg) rotateY(-90deg)',    // Cara 4 (izquierda)
+            'rotateX(-90deg) rotateY(0deg)',    // Cara 5 (arriba)
+            'rotateX(90deg) rotateY(0deg)'      // Cara 6 (abajo)
         ];
         let hasRolled = false;
         let rolledIndex = null;
@@ -242,38 +243,26 @@
             });
         }
 
-        // Lanzamiento con una única animación
         function rollDice() {
             if (hasRolled) return;
             hasRolled = true;
             resultElement.classList.remove('show');
-            
             rolledIndex = Math.floor(Math.random() * 6);
             setFacesForResult(rolledIndex);
-            
-            // Aplicar animación de giro
-            dice.style.transition = 'transform 1.8s cubic-bezier(0.22, 0.68, 0.25, 1.15)';
             dice.style.transform = rotations[rolledIndex];
-            
-            // Mostrar resultado después de la animación
             setTimeout(() => {
                 resultElement.textContent = `¡Toca hacer: ${faces[rolledIndex]}!`;
                 resultElement.classList.add('show');
             }, 1800);
         }
 
-        // Eventos
         dice.addEventListener('click', rollDice);
         dice.addEventListener('touchstart', rollDice);
 
-        // Inicialización
         window.addEventListener('load', () => {
             setAllFacesToDots();
-            // Posición inicial sin transición
             dice.style.transition = 'none';
             dice.style.transform = rotations[4];
-            
-            // Restaurar transición después de la carga
             setTimeout(() => {
                 dice.style.transition = 'transform 1.8s cubic-bezier(0.22, 0.68, 0.25, 1.15)';
             }, 100);
