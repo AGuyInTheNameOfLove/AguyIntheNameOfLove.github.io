@@ -4,17 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Party Dice</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap" rel="stylesheet">
+    <!-- Fuente rockera/neón -->
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
     <style>
         html, body {
             height: 100%;
         }
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            font-family: 'Rock Salt', Arial, cursive, sans-serif;
-            color: #fff;
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background: radial-gradient(circle at 20% 20%, #1a0033 0%, #0b001a 100%);
+            font-family: 'Russo One', Arial, Helvetica, sans-serif;
+            color: #fff;
             overflow: hidden;
         }
         .center-container {
@@ -27,57 +30,68 @@
         }
         h1 {
             margin-bottom: 2rem;
-            text-align: center;
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             letter-spacing: 3px;
             color: #fff;
-            text-shadow: 0 0 12px #00ffe7, 0 0 30px #ff00cc;
-            font-family: 'Rock Salt', Arial, cursive, sans-serif;
+            text-shadow:
+                0 0 12px #39ff14,
+                0 0 22px #ff005a,
+                0 0 42px #00eaff;
         }
         .scene {
             width: 220px;
             height: 220px;
-            perspective: 800px;
+            perspective: 900px;
             margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .cube {
-            width: 100%;
-            height: 100%;
+            width: 180px;
+            height: 180px;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 2s cubic-bezier(0.22, 0.68, 0.25, 1.15);
+            transition: transform 1.8s cubic-bezier(0.22, 0.68, 0.25, 1.15);
             cursor: pointer;
         }
         .cube-face {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 3px solid #00ffe7;
-            background: #1a1a2e;
+            width: 180px;
+            height: 180px;
+            border: 4px solid #ff005a;
+            background: #22213a;
+            /* Fondo opaco, sin transparencia */
             display: flex;
             justify-content: center;
             align-items: center;
             border-radius: 18px;
-            font-size: 1.7rem;
+            font-size: 1.4rem;
             font-weight: bold;
             text-align: center;
             color: #fff;
-            box-shadow: 0 0 25px #ff00cc, 0 0 60px #00ffe7, 0 0 5px #fff;
+            box-shadow:
+                0 0 40px 0 #39ff14,
+                0 0 80px 0 #ff005a,
+                0 0 10px 2px #00eaff;
             opacity: 1;
-            /* Fondo opaco */
+            /* Efecto neón en el borde */
+            outline: 2px solid #00eaff;
+            outline-offset: -6px;
+            transition: background 0.3s;
         }
         /* Caras del dado */
-        .cube-face--1 { transform: rotateY(0deg) translateZ(110px); }
-        .cube-face--2 { transform: rotateY(180deg) translateZ(110px); }
-        .cube-face--3 { transform: rotateY(90deg) translateZ(110px); }
-        .cube-face--4 { transform: rotateY(-90deg) translateZ(110px); }
-        .cube-face--5 { transform: rotateX(90deg) translateZ(110px); }
-        .cube-face--6 { transform: rotateX(-90deg) translateZ(110px); }
+        .cube-face--1 { transform: rotateY(0deg) translateZ(90px); }
+        .cube-face--2 { transform: rotateY(180deg) translateZ(90px); }
+        .cube-face--3 { transform: rotateY(90deg) translateZ(90px); }
+        .cube-face--4 { transform: rotateY(-90deg) translateZ(90px); }
+        .cube-face--5 { transform: rotateX(90deg) translateZ(90px); }
+        .cube-face--6 { transform: rotateX(-90deg) translateZ(90px); }
 
         /* Puntos del dado clásico */
         .dots {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             position: relative;
             display: flex;
             flex-wrap: wrap;
@@ -85,53 +99,74 @@
             align-items: center;
         }
         .dot {
-            width: 18px;
-            height: 18px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             background: #fff;
-            box-shadow: 0 0 10px #00ffe7, 0 0 5px #ff00cc;
+            box-shadow:
+                0 0 15px #39ff14,
+                0 0 7px #ff005a;
             position: absolute;
         }
         /* Posiciones para los 5 puntos */
         .dot.center { top: 50%; left: 50%; transform: translate(-50%, -50%); }
-        .dot.topleft { top: 15%; left: 15%; }
-        .dot.topright { top: 15%; right: 15%; }
-        .dot.bottomleft { bottom: 15%; left: 15%; }
-        .dot.bottomright { bottom: 15%; right: 15%; }
+        .dot.topleft { top: 16%; left: 16%; }
+        .dot.topright { top: 16%; right: 16%; }
+        .dot.bottomleft { bottom: 16%; left: 16%; }
+        .dot.bottomright { bottom: 16%; right: 16%; }
+
+        /* Opciones de fiesta */
+        .option-text {
+            font-size: 1.4rem;
+            color: #fff;
+            text-shadow:
+                0 0 10px #00eaff,
+                0 0 20px #ff005a;
+            padding: 0 10px;
+            letter-spacing: 1px;
+            user-select: none;
+        }
 
         .result {
             margin-top: 2rem;
             font-size: 1.5rem;
             text-align: center;
             min-height: 2.5rem;
-            text-shadow: 0 0 12px #00ffe7, 0 0 30px #ff00cc;
+            text-shadow:
+                0 0 10px #39ff14,
+                0 0 25px #ff005a;
             opacity: 0;
             transition: opacity 0.7s;
-            font-family: 'Rock Salt', Arial, cursive, sans-serif;
+            font-family: 'Russo One', Arial, sans-serif;
         }
         .result.show {
             opacity: 1;
         }
         .instructions {
-            margin-top: 1rem;
+            margin-top: 1.2rem;
             text-align: center;
             max-width: 340px;
             font-size: 1.1rem;
-            color: #00ffe7;
-            text-shadow: 0 0 8px #ff00cc;
-            letter-spacing: 1px;
+            color: #00eaff;
+            text-shadow: 0 0 8px #ff005a;
+            letter-spacing: 1.5px;
+            font-family: 'Russo One', Arial, sans-serif;
         }
         @media (max-width: 600px) {
             .scene {
-                width: 150px;
-                height: 150px;
+                width: 140px;
+                height: 140px;
+            }
+            .cube, .cube-face {
+                width: 110px;
+                height: 110px;
+                font-size: 1rem;
             }
             .cube-face {
-                font-size: 1.1rem;
                 border-radius: 10px;
             }
             h1 {
-                font-size: 1.3rem;
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -192,7 +227,7 @@
         // Cuando se lanza el dado, muestra el texto en cada cara
         function setFacesToOptions() {
             document.querySelectorAll('.cube-face').forEach((face, i) => {
-                face.querySelector('.face-content').textContent = faces[i];
+                face.querySelector('.face-content').innerHTML = `<span class="option-text">${faces[i]}</span>`;
             });
         }
 
