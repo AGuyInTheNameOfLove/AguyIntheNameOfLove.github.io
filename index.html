@@ -3,14 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dado Misterioso</title>
+    <title>Party Dice</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
             display: flex;
             flex-direction: column;
@@ -23,7 +17,6 @@
             overflow: hidden;
             position: relative;
         }
-        
         body::before {
             content: "";
             position: absolute;
@@ -36,21 +29,18 @@
                 radial-gradient(circle at 80% 70%, rgba(142, 68, 173, 0.1) 0%, transparent 40%);
             z-index: -1;
         }
-        
         h1 {
             margin-bottom: 2rem;
             text-align: center;
             text-shadow: 0 0 10px rgba(0, 217, 255, 0.7);
             letter-spacing: 2px;
         }
-        
         .scene {
             width: 200px;
             height: 200px;
             perspective: 600px;
             margin-bottom: 2rem;
         }
-        
         .cube {
             width: 100%;
             height: 100%;
@@ -59,73 +49,30 @@
             transition: transform 1.5s cubic-bezier(0.17, 0.67, 0.21, 0.99);
             cursor: pointer;
         }
-        
         .cube-face {
             position: absolute;
             width: 100%;
             height: 100%;
             border: 2px solid rgba(255, 255, 255, 0.2);
-            background: rgba(10, 10, 20, 0.8);
+            background: rgba(10, 10, 20, 0.85);
             display: flex;
             justify-content: center;
             align-items: center;
             box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 217, 255, 0.2);
-            border-radius: 8px;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            color: #fff;
+            text-shadow: 0 0 10px #00d9ff, 0 0 2px #fff;
+            padding: 20px;
         }
-        
-        .dot {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: #e6e6e6;
-            box-shadow: 0 0 10px rgba(0, 217, 255, 0.7);
-            position: absolute;
-        }
-        
-        /* Posiciones de las caras */
         .cube-face--1 { transform: rotateY(0deg) translateZ(100px); }
         .cube-face--2 { transform: rotateY(180deg) translateZ(100px); }
         .cube-face--3 { transform: rotateY(90deg) translateZ(100px); }
         .cube-face--4 { transform: rotateY(-90deg) translateZ(100px); }
         .cube-face--5 { transform: rotateX(90deg) translateZ(100px); }
         .cube-face--6 { transform: rotateX(-90deg) translateZ(100px); }
-        
-        /* Configuración de puntos para cada cara */
-        .cube-face--1 .dot { transform: translate(0, 0); }
-        
-        .cube-face--2 .dot:nth-child(1) { top: 30%; left: 30%; }
-        .cube-face--2 .dot:nth-child(2) { bottom: 30%; right: 30%; }
-        
-        .cube-face--3 .dot:nth-child(1) { top: 30%; left: 30%; }
-        .cube-face--3 .dot:nth-child(2) { transform: translate(0, 0); }
-        .cube-face--3 .dot:nth-child(3) { bottom: 30%; right: 30%; }
-        
-        .cube-face--4 .dot {
-            width: 25px;
-            height: 25px;
-        }
-        .cube-face--4 .dot:nth-child(1) { top: 30%; left: 30%; }
-        .cube-face--4 .dot:nth-child(2) { top: 30%; right: 30%; }
-        .cube-face--4 .dot:nth-child(3) { bottom: 30%; left: 30%; }
-        .cube-face--4 .dot:nth-child(4) { bottom: 30%; right: 30%; }
-        
-        .cube-face--5 .dot:nth-child(1) { top: 30%; left: 30%; }
-        .cube-face--5 .dot:nth-child(2) { top: 30%; right: 30%; }
-        .cube-face--5 .dot:nth-child(3) { transform: translate(0, 0); }
-        .cube-face--5 .dot:nth-child(4) { bottom: 30%; left: 30%; }
-        .cube-face--5 .dot:nth-child(5) { bottom: 30%; right: 30%; }
-        
-        .cube-face--6 .dot {
-            width: 20px;
-            height: 20px;
-        }
-        .cube-face--6 .dot:nth-child(1) { top: 30%; left: 20%; }
-        .cube-face--6 .dot:nth-child(2) { top: 30%; right: 20%; }
-        .cube-face--6 .dot:nth-child(3) { transform: translate(0, 0); }
-        .cube-face--6 .dot:nth-child(4) { bottom: 30%; left: 20%; }
-        .cube-face--6 .dot:nth-child(5) { bottom: 30%; right: 20%; }
-        .cube-face--6 .dot:nth-child(6) { right: 20%; }
-        
         .result {
             margin-top: 2rem;
             font-size: 1.5rem;
@@ -135,11 +82,9 @@
             opacity: 0;
             transition: opacity 0.5s;
         }
-        
         .result.show {
             opacity: 1;
         }
-        
         .instructions {
             margin-top: 1rem;
             text-align: center;
@@ -147,135 +92,78 @@
             font-size: 0.9rem;
             color: rgba(230, 230, 230, 0.7);
         }
-        
         @media (max-width: 480px) {
             .scene {
                 width: 150px;
                 height: 150px;
             }
-            
             .cube-face {
-                border-width: 1px;
+                font-size: 1.1rem;
+                padding: 10px;
             }
-            
-            .dot {
-                width: 20px;
-                height: 20px;
-            }
-            
             h1 {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
             }
         }
     </style>
 </head>
 <body>
-    <h1>DADO MISTERIOSO</h1>
-    
+    <h1>DADO DE LA FIESTA</h1>
     <div class="scene">
         <div class="cube" id="dice">
-            <!-- Cara 1 (Frente) -->
-            <div class="cube-face cube-face--1">
-                <div class="dot"></div>
-            </div>
-            
-            <!-- Cara 2 (Atrás) -->
-            <div class="cube-face cube-face--2">
-                <div class="dot"></div>
-                <div class="dot"></div>
-            </div>
-            
-            <!-- Cara 3 (Derecha) -->
-            <div class="cube-face cube-face--3">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-            </div>
-            
-            <!-- Cara 4 (Izquierda) -->
-            <div class="cube-face cube-face--4">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-            </div>
-            
-            <!-- Cara 5 (Arriba) -->
-            <div class="cube-face cube-face--5">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-            </div>
-            
-            <!-- Cara 6 (Abajo) -->
-            <div class="cube-face cube-face--6">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-            </div>
+            <div class="cube-face cube-face--1">Kiss</div>
+            <div class="cube-face cube-face--2">Dance together</div>
+            <div class="cube-face cube-face--3">Roll again</div>
+            <div class="cube-face cube-face--4">Kiss</div>
+            <div class="cube-face cube-face--5">Take a photo</div>
+            <div class="cube-face cube-face--6">Dance together</div>
         </div>
     </div>
-    
     <div class="result" id="result"></div>
     <div class="instructions">Haz clic en el dado para lanzarlo</div>
-
     <script>
         const dice = document.getElementById('dice');
         const resultElement = document.getElementById('result');
+        const faces = [
+            "Kiss",
+            "Dance together",
+            "Roll again",
+            "Kiss",
+            "Take a photo",
+            "Dance together"
+        ];
         let isRolling = false;
-        
-        // Rotaciones para cada cara del dado
-        const rotations = {
-            1: 'rotateX(0deg) rotateY(0deg)',
-            2: 'rotateX(180deg) rotateY(0deg)',
-            3: 'rotateX(0deg) rotateY(90deg)',
-            4: 'rotateX(0deg) rotateY(-90deg)',
-            5: 'rotateX(90deg) rotateY(0deg)',
-            6: 'rotateX(-90deg) rotateY(0deg)'
-        };
-        
-        // Generar rotaciones aleatorias adicionales para el efecto de giro
+        const rotations = [
+            'rotateX(0deg) rotateY(0deg)',      // 1: Kiss
+            'rotateX(180deg) rotateY(0deg)',    // 2: Dance together
+            'rotateX(0deg) rotateY(90deg)',     // 3: Roll again
+            'rotateX(0deg) rotateY(-90deg)',    // 4: Kiss
+            'rotateX(90deg) rotateY(0deg)',     // 5: Take a photo
+            'rotateX(-90deg) rotateY(0deg)'     // 6: Dance together
+        ];
         function getRandomRotation() {
             const randomX = Math.floor(Math.random() * 5) * 180;
             const randomY = Math.floor(Math.random() * 5) * 180;
             const randomZ = Math.floor(Math.random() * 5) * 180;
             return `rotateX(${randomX}deg) rotateY(${randomY}deg) rotateZ(${randomZ}deg)`;
         }
-        
-        // Lanzar el dado
         function rollDice() {
             if (isRolling) return;
-            
             isRolling = true;
             resultElement.classList.remove('show');
-            
-            // Rotación aleatoria durante el giro
             dice.style.transform = getRandomRotation();
-            
-            // Resultado después de 1.5 segundos (duración de la animación)
             setTimeout(() => {
-                const result = Math.floor(Math.random() * 6) + 1;
+                const result = Math.floor(Math.random() * 6);
                 dice.style.transform = rotations[result] + ' ' + getRandomRotation();
-                
-                // Mostrar resultado
-                resultElement.textContent = `Resultado: ${result}`;
+                resultElement.textContent = `¡Toca hacer: ${faces[result]}!`;
                 resultElement.classList.add('show');
                 isRolling = false;
             }, 1500);
         }
-        
-        // Event listeners
         dice.addEventListener('click', rollDice);
         dice.addEventListener('touchstart', rollDice);
-        
-        // Inicializar en posición aleatoria
         window.addEventListener('load', () => {
-            const initialResult = Math.floor(Math.random() * 6) + 1;
+            const initialResult = Math.floor(Math.random() * 6);
             dice.style.transform = rotations[initialResult];
         });
     </script>
