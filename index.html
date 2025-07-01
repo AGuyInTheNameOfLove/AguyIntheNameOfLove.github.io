@@ -239,29 +239,41 @@
             return `rotateX(${randomX}deg) rotateY(${randomY}deg) rotateZ(${randomZ}deg)`;
         }
 
-        function rollDice() {
-            if (isRolling) return;
-            isRolling = true;
-            resultElement.classList.remove('show');
-            // Al primer click, cambia las caras a las opciones de fiesta
-            if (!hasRolled) {
-                setFacesToOptions();
-                hasRolled = true;
-            }
-            // Giro aleatorio
-            dice.style.transform = getRandomRotation();
-            setTimeout(() => {
-                const result = Math.floor(Math.random() * 6);
-                dice.style.transform = rotations[result] + ' ' + getRandomRotation();
-                resultElement.textContent = `¡Toca hacer: ${faces[result]}!`;
-                resultElement.classList.add('show');
-                isRolling = false;
-            }, 1800);
-        }
+       function rollDice() {
+    if (isRolling) return;
+    isRolling = true;
+    resultElement.classList.remove('show');
 
-        dice.addEventListener('click', rollDice);
-        dice.addEventListener('touchstart', rollDice);
+    // Al primer click, cambia las caras a las opciones de fiesta
+    if (!hasRolled) {
+        setFacesToOptions();
+        hasRolled = true;
+    }
 
+    const result = Math.floor(Math.random() * 6);
+
+    // Añadimos vueltas extra para una animación fluida
+    const extraTurnsX = 360 * (Math.floor(Math.random() * 4) + 1);
+    const extraTurnsY = 360 * (Math.floor(Math.random() * 4) + 1);
+
+    // Obtenemos la rotación base para esa cara
+    const baseRotation = rotations[result];
+
+    // Extraemos los valores base de X e Y de esa rotación
+    const match = baseRotation.match(/rotateX\((-?\d+)deg\)\s+rotateY\((-?\d+)deg\)/);
+    const baseX = parseInt(match[1]);
+    const baseY = parseInt(match[2]);
+
+    // Aplicamos la rotación final sumando las vueltas extra
+    const finalRotation = `rotateX(${baseX + extraTurnsX}deg) rotateY(${baseY + extraTurnsY}deg)`;
+    dice.style.transform = finalRotation;
+
+    setTimeout(() => {
+        resultElement.textContent = `¡Toca hacer: ${faces[result]}!`;
+        resultElement.classList.add('show');
+        isRolling = false;
+    }, 1800);
+}
         // Al cargar, muestra los puntos clásicos
         window.addEventListener('load', () => {
             setAllFacesToDots();
