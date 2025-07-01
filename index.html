@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Party Dice</title>
-    <!-- Fuente rockera/neón -->
     <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
     <style>
         html, body {
@@ -52,7 +51,6 @@
             height: 180px;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 1.8s cubic-bezier(0.22, 0.68, 0.25, 1.15);
             cursor: pointer;
         }
         .cube-face {
@@ -61,7 +59,6 @@
             height: 180px;
             border: 4px solid #ff005a;
             background: #22213a;
-            /* Fondo opaco, sin transparencia */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -75,10 +72,9 @@
                 0 0 80px 0 #ff005a,
                 0 0 10px 2px #00eaff;
             opacity: 1;
-            /* Efecto neón en el borde */
             outline: 2px solid #00eaff;
             outline-offset: -6px;
-            transition: background 0.3s;
+            overflow: hidden;
         }
         /* Caras del dado */
         .cube-face--1 { transform: rotateY(0deg) translateZ(90px); }
@@ -125,6 +121,8 @@
             padding: 0 10px;
             letter-spacing: 1px;
             user-select: none;
+            display: block;
+            transform: rotate(0deg); /* Garantiza orientación correcta */
         }
 
         .result {
@@ -198,18 +196,19 @@
             "Take a photo",
             "Dance together"
         ];
+        // Rotaciones para que el texto siempre quede legible
         const rotations = [
-            'rotateX(0deg) rotateY(0deg)',      // 1
-            'rotateX(180deg) rotateY(0deg)',    // 2
-            'rotateX(0deg) rotateY(90deg)',     // 3
-            'rotateX(0deg) rotateY(-90deg)',    // 4
-            'rotateX(90deg) rotateY(0deg)',     // 5
-            'rotateX(-90deg) rotateY(0deg)'     // 6
+            'rotateX(0deg) rotateY(0deg) rotateZ(0deg)',      // Cara 1
+            'rotateX(0deg) rotateY(180deg) rotateZ(0deg)',    // Cara 2
+            'rotateX(0deg) rotateY(90deg) rotateZ(0deg)',     // Cara 3
+            'rotateX(0deg) rotateY(-90deg) rotateZ(0deg)',    // Cara 4
+            'rotateX(-90deg) rotateY(0deg) rotateZ(0deg)',    // Cara 5
+            'rotateX(90deg) rotateY(0deg) rotateZ(0deg)'      // Cara 6
         ];
-        let isRolling = false;
         let hasRolled = false;
+        let rolledIndex = null;
 
-        // Inicialmente, muestra los 5 puntos en todas las caras
+        // Muestra los 5 puntos en todas las caras
         function setAllFacesToDots() {
             document.querySelectorAll('.face-content').forEach(face => {
                 face.innerHTML = `
@@ -224,49 +223,60 @@
             });
         }
 
-        // Cuando se lanza el dado, muestra el texto en cada cara
-        function setFacesToOptions() {
+        // Solo la cara ganadora muestra el texto
+        function setFacesForResult(index) {
             document.querySelectorAll('.cube-face').forEach((face, i) => {
-                face.querySelector('.face-content').innerHTML = `<span class="option-text">${faces[i]}</span>`;
+                if (i === index) {
+                    face.querySelector('.face-content').innerHTML = `<span class="option-text">${faces[index]}</span>`;
+                } else {
+                    face.querySelector('.face-content').innerHTML = `
+                        <div class="dots">
+                            <div class="dot topleft"></div>
+                            <div class="dot bottomright"></div>
+                            <div class="dot center"></div>
+                            <div class="dot topright"></div>
+                            <div class="dot bottomleft"></div>
+                        </div>
+                    `;
+                }
             });
         }
 
-        // Rotación aleatoria extra para el efecto de giro
-        function getRandomRotation() {
-            const randomX = Math.floor(Math.random() * 5) * 180;
-            const randomY = Math.floor(Math.random() * 5) * 180;
-            const randomZ = Math.floor(Math.random() * 5) * 180;
-            return `rotateX(${randomX}deg) rotateY(${randomY}deg) rotateZ(${randomZ}deg)`;
-        }
-
+        // Lanzamiento con una única animación
         function rollDice() {
-            if (isRolling) return;
-            isRolling = true;
+            if (hasRolled) return;
+            hasRolled = true;
             resultElement.classList.remove('show');
-            // Al primer click, cambia las caras a las opciones de fiesta
-            if (!hasRolled) {
-                setFacesToOptions();
-                hasRolled = true;
-            }
-            // Giro aleatorio
-            dice.style.transform = getRandomRotation();
+            
+            rolledIndex = Math.floor(Math.random() * 6);
+            setFacesForResult(rolledIndex);
+            
+            // Aplicar animación de giro
+            dice.style.transition = 'transform 1.8s cubic-bezier(0.22, 0.68, 0.25, 1.15)';
+            dice.style.transform = rotations[rolledIndex];
+            
+            // Mostrar resultado después de la animación
             setTimeout(() => {
-                const result = Math.floor(Math.random() * 6);
-                dice.style.transform = rotations[result] + ' ' + getRandomRotation();
-                resultElement.textContent = `¡Toca hacer: ${faces[result]}!`;
+                resultElement.textContent = `¡Toca hacer: ${faces[rolledIndex]}!`;
                 resultElement.classList.add('show');
-                isRolling = false;
             }, 1800);
         }
 
+        // Eventos
         dice.addEventListener('click', rollDice);
         dice.addEventListener('touchstart', rollDice);
 
-        // Al cargar, muestra los puntos clásicos
+        // Inicialización
         window.addEventListener('load', () => {
             setAllFacesToDots();
-            // Dado en posición de cara 5 (cinco puntos)
+            // Posición inicial sin transición
+            dice.style.transition = 'none';
             dice.style.transform = rotations[4];
+            
+            // Restaurar transición después de la carga
+            setTimeout(() => {
+                dice.style.transition = 'transform 1.8s cubic-bezier(0.22, 0.68, 0.25, 1.15)';
+            }, 100);
         });
     </script>
 </body>
