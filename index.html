@@ -4,41 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Party Dice</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rock+Salt&display=swap" rel="stylesheet">
     <style>
+        html, body {
+            height: 100%;
+        }
         body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            font-family: 'Rock Salt', Arial, cursive, sans-serif;
+            color: #fff;
+            margin: 0;
+            overflow: hidden;
+        }
+        .center-container {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            font-family: 'Arial', sans-serif;
-            color: #e6e6e6;
-            overflow: hidden;
-            position: relative;
-        }
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(41, 128, 185, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(142, 68, 173, 0.1) 0%, transparent 40%);
-            z-index: -1;
         }
         h1 {
             margin-bottom: 2rem;
             text-align: center;
-            text-shadow: 0 0 10px rgba(0, 217, 255, 0.7);
-            letter-spacing: 2px;
+            font-size: 2.2rem;
+            letter-spacing: 3px;
+            color: #fff;
+            text-shadow: 0 0 12px #00ffe7, 0 0 30px #ff00cc;
+            font-family: 'Rock Salt', Arial, cursive, sans-serif;
         }
         .scene {
-            width: 200px;
-            height: 200px;
-            perspective: 600px;
+            width: 220px;
+            height: 220px;
+            perspective: 800px;
             margin-bottom: 2rem;
         }
         .cube {
@@ -46,41 +45,69 @@
             height: 100%;
             position: relative;
             transform-style: preserve-3d;
-            transition: transform 1.5s cubic-bezier(0.17, 0.67, 0.21, 0.99);
+            transition: transform 2s cubic-bezier(0.22, 0.68, 0.25, 1.15);
             cursor: pointer;
         }
         .cube-face {
             position: absolute;
             width: 100%;
             height: 100%;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            background: rgba(10, 10, 20, 0.85);
+            border: 3px solid #00ffe7;
+            background: #1a1a2e;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 217, 255, 0.2);
-            border-radius: 12px;
-            font-size: 1.5rem;
+            border-radius: 18px;
+            font-size: 1.7rem;
             font-weight: bold;
             text-align: center;
             color: #fff;
-            text-shadow: 0 0 10px #00d9ff, 0 0 2px #fff;
-            padding: 20px;
+            box-shadow: 0 0 25px #ff00cc, 0 0 60px #00ffe7, 0 0 5px #fff;
+            opacity: 1;
+            /* Fondo opaco */
         }
-        .cube-face--1 { transform: rotateY(0deg) translateZ(100px); }
-        .cube-face--2 { transform: rotateY(180deg) translateZ(100px); }
-        .cube-face--3 { transform: rotateY(90deg) translateZ(100px); }
-        .cube-face--4 { transform: rotateY(-90deg) translateZ(100px); }
-        .cube-face--5 { transform: rotateX(90deg) translateZ(100px); }
-        .cube-face--6 { transform: rotateX(-90deg) translateZ(100px); }
+        /* Caras del dado */
+        .cube-face--1 { transform: rotateY(0deg) translateZ(110px); }
+        .cube-face--2 { transform: rotateY(180deg) translateZ(110px); }
+        .cube-face--3 { transform: rotateY(90deg) translateZ(110px); }
+        .cube-face--4 { transform: rotateY(-90deg) translateZ(110px); }
+        .cube-face--5 { transform: rotateX(90deg) translateZ(110px); }
+        .cube-face--6 { transform: rotateX(-90deg) translateZ(110px); }
+
+        /* Puntos del dado clásico */
+        .dots {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+        .dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 10px #00ffe7, 0 0 5px #ff00cc;
+            position: absolute;
+        }
+        /* Posiciones para los 5 puntos */
+        .dot.center { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .dot.topleft { top: 15%; left: 15%; }
+        .dot.topright { top: 15%; right: 15%; }
+        .dot.bottomleft { bottom: 15%; left: 15%; }
+        .dot.bottomright { bottom: 15%; right: 15%; }
+
         .result {
             margin-top: 2rem;
             font-size: 1.5rem;
             text-align: center;
             min-height: 2.5rem;
-            text-shadow: 0 0 10px rgba(0, 217, 255, 0.7);
+            text-shadow: 0 0 12px #00ffe7, 0 0 30px #ff00cc;
             opacity: 0;
-            transition: opacity 0.5s;
+            transition: opacity 0.7s;
+            font-family: 'Rock Salt', Arial, cursive, sans-serif;
         }
         .result.show {
             opacity: 1;
@@ -88,18 +115,20 @@
         .instructions {
             margin-top: 1rem;
             text-align: center;
-            max-width: 300px;
-            font-size: 0.9rem;
-            color: rgba(230, 230, 230, 0.7);
+            max-width: 340px;
+            font-size: 1.1rem;
+            color: #00ffe7;
+            text-shadow: 0 0 8px #ff00cc;
+            letter-spacing: 1px;
         }
-        @media (max-width: 480px) {
+        @media (max-width: 600px) {
             .scene {
                 width: 150px;
                 height: 150px;
             }
             .cube-face {
                 font-size: 1.1rem;
-                padding: 10px;
+                border-radius: 10px;
             }
             h1 {
                 font-size: 1.3rem;
@@ -108,19 +137,21 @@
     </style>
 </head>
 <body>
-    <h1>PARTY DICE</h1>
-    <div class="scene">
-        <div class="cube" id="dice">
-            <div class="cube-face cube-face--1">Kiss</div>
-            <div class="cube-face cube-face--2">Dance together</div>
-            <div class="cube-face cube-face--3">Roll again</div>
-            <div class="cube-face cube-face--4">Kiss</div>
-            <div class="cube-face cube-face--5">Take a photo</div>
-            <div class="cube-face cube-face--6">Dance together</div>
+    <div class="center-container">
+        <h1>PARTY DICE</h1>
+        <div class="scene">
+            <div class="cube" id="dice">
+                <div class="cube-face cube-face--1"><span class="face-content"></span></div>
+                <div class="cube-face cube-face--2"><span class="face-content"></span></div>
+                <div class="cube-face cube-face--3"><span class="face-content"></span></div>
+                <div class="cube-face cube-face--4"><span class="face-content"></span></div>
+                <div class="cube-face cube-face--5"><span class="face-content"></span></div>
+                <div class="cube-face cube-face--6"><span class="face-content"></span></div>
+            </div>
         </div>
+        <div class="result" id="result"></div>
+        <div class="instructions">¡Haz clic o toca el dado para lanzar!<br>Temática neón/rock 🤘</div>
     </div>
-    <div class="result" id="result"></div>
-    <div class="instructions">Click on me to roll</div>
     <script>
         const dice = document.getElementById('dice');
         const resultElement = document.getElementById('result');
@@ -132,25 +163,57 @@
             "Take a photo",
             "Dance together"
         ];
-        let isRolling = false;
         const rotations = [
-            'rotateX(0deg) rotateY(0deg)',      // 1: Kiss
-            'rotateX(180deg) rotateY(0deg)',    // 2: Dance together
-            'rotateX(0deg) rotateY(90deg)',     // 3: Roll again
-            'rotateX(0deg) rotateY(-90deg)',    // 4: Kiss
-            'rotateX(90deg) rotateY(0deg)',     // 5: Take a photo
-            'rotateX(-90deg) rotateY(0deg)'     // 6: Dance together
+            'rotateX(0deg) rotateY(0deg)',      // 1
+            'rotateX(180deg) rotateY(0deg)',    // 2
+            'rotateX(0deg) rotateY(90deg)',     // 3
+            'rotateX(0deg) rotateY(-90deg)',    // 4
+            'rotateX(90deg) rotateY(0deg)',     // 5
+            'rotateX(-90deg) rotateY(0deg)'     // 6
         ];
+        let isRolling = false;
+        let hasRolled = false;
+
+        // Inicialmente, muestra los 5 puntos en todas las caras
+        function setAllFacesToDots() {
+            document.querySelectorAll('.face-content').forEach(face => {
+                face.innerHTML = `
+                    <div class="dots">
+                        <div class="dot topleft"></div>
+                        <div class="dot bottomright"></div>
+                        <div class="dot center"></div>
+                        <div class="dot topright"></div>
+                        <div class="dot bottomleft"></div>
+                    </div>
+                `;
+            });
+        }
+
+        // Cuando se lanza el dado, muestra el texto en cada cara
+        function setFacesToOptions() {
+            document.querySelectorAll('.cube-face').forEach((face, i) => {
+                face.querySelector('.face-content').textContent = faces[i];
+            });
+        }
+
+        // Rotación aleatoria extra para el efecto de giro
         function getRandomRotation() {
             const randomX = Math.floor(Math.random() * 5) * 180;
             const randomY = Math.floor(Math.random() * 5) * 180;
             const randomZ = Math.floor(Math.random() * 5) * 180;
             return `rotateX(${randomX}deg) rotateY(${randomY}deg) rotateZ(${randomZ}deg)`;
         }
+
         function rollDice() {
             if (isRolling) return;
             isRolling = true;
             resultElement.classList.remove('show');
+            // Al primer click, cambia las caras a las opciones de fiesta
+            if (!hasRolled) {
+                setFacesToOptions();
+                hasRolled = true;
+            }
+            // Giro aleatorio
             dice.style.transform = getRandomRotation();
             setTimeout(() => {
                 const result = Math.floor(Math.random() * 6);
@@ -158,13 +221,17 @@
                 resultElement.textContent = `¡Toca hacer: ${faces[result]}!`;
                 resultElement.classList.add('show');
                 isRolling = false;
-            }, 1500);
+            }, 1800);
         }
+
         dice.addEventListener('click', rollDice);
         dice.addEventListener('touchstart', rollDice);
+
+        // Al cargar, muestra los puntos clásicos
         window.addEventListener('load', () => {
-            const initialResult = Math.floor(Math.random() * 6);
-            dice.style.transform = rotations[initialResult];
+            setAllFacesToDots();
+            // Dado en posición de cara 5 (cinco puntos)
+            dice.style.transform = rotations[4];
         });
     </script>
 </body>
